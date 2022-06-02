@@ -8,10 +8,17 @@ const {
 } = require('inquirer');
 const fs = require('fs');
 
-const questions = [{
+
+
+const initQ = [{
         type: 'input',
-        name: 'managerName',
-        message: "What is the Manager's name?"
+        name: 'manager',
+        message: 'What is the name of the manager?'
+    },
+    {
+        type: 'input',
+        name: 'name',
+        message: 'What is the team members name?'
     },
     {
         type: 'input',
@@ -20,8 +27,23 @@ const questions = [{
     },
     {
         type: 'input',
+        name: 'email',
+        message: 'What is their email address?'
+    },
+    {
+        type: 'input',
         name: 'officeNumber',
         message: 'What is their office number?'
+    },
+    {
+        type: 'input',
+        name: 'gitHub',
+        message: 'Enter github username'
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: 'Enter school name'
     },
     {
         type: 'list',
@@ -30,11 +52,74 @@ const questions = [{
         choices: ['Engineer', 'Intern', 'That is everyone on the team']
     }
 ]
+let questionArray = [];
 
+function makeArray(name, sp) {
+    questionArray.push(initQ[name], initQ[2], initQ[3], initQ[sp], initQ[7])
+    return questionArray;
+}
 
-prompt([...questions]).then((answers) => {
-    fs.writeFile('./dist/readme.md', `${answers.managerName}`, (err) => {
-        if (err) throw err;
-        console.log('yay');
+function selectArray(employee) {
+    switch (employee) {
+        case 'Manager':
+            makeArray(0, 4);
+            break;
+        case 'Engineer':
+            makeArray(1, 5, );
+            break;
+        case 'Intern':
+            makeArray(1, 6);
+            break;
+        default:
+            break
+    }
+}
+
+// function generateMemberData(employee) {
+//     const member = new employee(employee.name, employee.ID, employee.email)
+//     console.dir(member);
+// }
+
+const generateTeam = (employee) => {
+    questionArray = [];
+    selectArray(employee);
+    prompt([...questionArray]).then((answers) => {
+        switch (answers.newEmployee) {
+            case 'Engineer':
+                fs.appendFile('./dist/employees.md', answers.ID, (err) => {
+                    if (err) throw err;
+                    console.log(answers)
+                })
+                generateEngineer();
+                break;
+            case 'Intern':
+                fs.appendFile('./dist/employees.md', `${answers}`, (err) => {
+                    if (err) throw err;
+                    console.log(answers)
+                })
+                generateIntern();
+                break;
+            default:
+                return console.dir(answers)
+                break;
+        }
     })
-})
+    // generateMemberData(answers);
+}
+
+const generateEngineer = () => generateTeam('Engineer');
+
+const generateIntern = () => generateTeam('Intern');
+
+
+generateTeam('Manager');
+
+// prompt([...questions]).then((answers) => {
+//     if (answers.newEmployee == 'Engineer') {
+//         prompt([...engineerQs])
+//     }
+//     fs.writeFile('./dist/readme.md', `${answers.managerName}`, (err) => {
+//         if (err) throw err;
+//         console.log('yay');
+//     })
+// })
