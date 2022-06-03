@@ -54,6 +54,8 @@ const initQ = [{
 ]
 let questionArray = [];
 
+let teamArray = [];
+
 function makeArray(name, sp) {
     questionArray.push(initQ[name], initQ[2], initQ[3], initQ[sp], initQ[7])
     return questionArray;
@@ -84,19 +86,16 @@ const generateTeam = (employee) => {
     questionArray = [];
     selectArray(employee);
     prompt([...questionArray]).then((answers) => {
+        let teamMember = [];
         switch (answers.newEmployee) {
             case 'Engineer':
-                fs.appendFile('./dist/employees.md', answers.ID, (err) => {
-                    if (err) throw err;
-                    console.log(answers)
-                })
+                teamMember.push(answers);
+                teamArray.push(teamMember);
                 generateEngineer();
                 break;
             case 'Intern':
-                fs.appendFile('./dist/employees.md', `${answers}`, (err) => {
-                    if (err) throw err;
-                    console.log(answers)
-                })
+                teamMember.push(answers);
+                teamArray.push(teamMember);
                 generateIntern();
                 break;
             default:
